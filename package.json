@@ -1,0 +1,27 @@
+{
+  "name": "dockerize-node-app",
+  "version": "1.0.0",
+  "description": "CLI tool to launch a docker container and create a Dockerfile for NodeJS applications",
+  "main": "index.js",
+  "scripts": {
+    "test": "npm test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/brainsiq/dockerize-node-app.git"
+  },
+  "keywords": [
+    "docker",
+    "dockerfile",
+    "dockerize",
+    "dockerise",
+    "containerize",
+    "containerise"
+  ],
+  "author": "Chris Impey [chris@impey.io]",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/brainsiq/dockerize-node-app/issues"
+  },
+  "homepage": "https://github.com/brainsiq/dockerize-node-app#readme"
+}
