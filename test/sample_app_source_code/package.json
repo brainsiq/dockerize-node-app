@@ -1,0 +1,6 @@
+{
+  "name": "package-json-name",
+  "scripts": {
+    "start": "node index.js"
+  }
+}

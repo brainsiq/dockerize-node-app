@@ -148,5 +148,31 @@ describe('Dockerize', () => {
           });
       });
     });
+
+    describe('source code', () => {
+      it('copies source code to /usr/[app-name]', () => {
+        return dockerize.dockerfile(__dirname + '/sample_app_source_code')
+          .then(dockerfile => {
+            const lines = dockerfile.split(os.EOL);
+            expect(lines[1]).to.equal('COPY . /usr/package-json-name')
+          });
+      });
+
+      it('sets WORKDIR to /usr/[app-name]', () => {
+        return dockerize.dockerfile(__dirname + '/sample_app_source_code')
+          .then(dockerfile => {
+            const lines = dockerfile.split(os.EOL);
+            expect(lines[2]).to.equal('WORKDIR /usr/package-json-name')
+          });
+      });
+
+      it ('runs npm install', () => {
+        return dockerize.dockerfile(__dirname + '/sample_app_source_code')
+          .then(dockerfile => {
+            const lines = dockerfile.split(os.EOL);
+            expect(lines[3]).to.equal('RUN npm install')
+          });
+      });
+    });
   });
 });
