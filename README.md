@@ -28,3 +28,5 @@ docker run myapp
 * Adds source code into docker image
 * Runs `npm install`
 * Sets start command as npm start or node [entrypoint.js] depending on package.json settings
+
+See [issues](https://github.com/brainsiq/dockerize-node-app/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement) for upcoming features.
