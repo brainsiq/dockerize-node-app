@@ -1,8 +1,11 @@
 {
   "name": "dockerize-node-app",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "CLI tool to launch a docker container and create a Dockerfile for NodeJS applications",
-  "main": "index.js",
+  "preferGlobal": true,
+  "bin": {
+    "dockerize": "index.js"
+  },
   "scripts": {
     "test": "grunt"
   },

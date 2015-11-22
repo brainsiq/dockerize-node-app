@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 'use strict';
 
 const fs = require('fs');
@@ -16,4 +18,7 @@ dockerize.dockerfile(process.cwd())
 
       console.log('Created Dockerfile');
     });
+  })
+  .catch(err => {
+    console.error(err);
   });
