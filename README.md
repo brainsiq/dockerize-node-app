@@ -6,7 +6,7 @@ CLI tool to generate a Dockerfile for running a NodeJS application, and starting
 
 # Installation
 
-npm install -g dockerize-app
+`npm install -g dockerize-app`
 
 # Useage
 
