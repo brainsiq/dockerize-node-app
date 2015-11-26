@@ -1,6 +1,6 @@
 {
   "name": "dockerize-app",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "CLI tool to launch a docker container and create a Dockerfile for NodeJS applications",
   "preferGlobal": true,
   "bin": {
