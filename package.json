@@ -21,7 +21,10 @@
     "containerize",
     "containerise"
   ],
-  "author": "Chris Impey [chris@impey.io]",
+  "author": {
+    "name": "Chris Impey",
+    "email": "chris@impey.io"
+  },
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/brainsiq/dockerize-node-app/issues"
