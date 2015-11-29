@@ -11,13 +11,9 @@ CLI tool to generate a Dockerfile for running a NodeJS application, and starting
 # Useage
 
 ```
-# dockerize
+# creates dockerfile, builds image and runs container
 cd /path/to/node/app
 dockerize
-
-# build and run docker container
-docker build -t myapp .
-docker run myapp
 ```
 
 ### Dockerfile generation
