@@ -5,7 +5,7 @@ const expect = require('chai').expect;
 const commandBuilder = require('../lib/command_builder');
 
 describe('Command builder', () => {
-  const directory = __dirname + '/sample_app_source_code';
+  const directory = `${__dirname}/sample_app_source_code`;
 
   describe('docker build', () => {
     let command;

@@ -1,7 +1,8 @@
 'use strict';
 
 const os = require('os');
-const expect = require('chai').expect;
+const chai = require('chai').use(require('dirty-chai'));
+const expect = chai.expect;
 const nock = require('nock');
 
 const dockerize = require('../lib/dockerize');
@@ -23,7 +24,7 @@ describe('Dockerize', () => {
 
       unknownNodeNockScope = nock('https://semver.io')
         .get('/node/stable')
-        .reply(200, '5.1.0')
+        .reply(200, '5.1.0');
     });
 
     afterEach(() => {
@@ -31,12 +32,10 @@ describe('Dockerize', () => {
     });
 
     it('throws when there is no package.json', done => {
-      return dockerize.dockerfile(__dirname + '/12345')
-        .then(() => {
-          done(new Error('Expected test to error'));
-        })
+      return dockerize.dockerfile(`${__dirname}/12345`)
+        .then(() => done(new Error('Expected test to error')))
         .catch(err => {
-          expect(err).to.exist;
+          expect(err).to.exist();
           expect(err).to.be.a('error');
           expect(err.message).to.equal(`${__dirname}/12345 does not contain a package.json file!`);
           done();
@@ -45,14 +44,14 @@ describe('Dockerize', () => {
 
     describe('node version from .nvmrc', () => {
       it('requests node version from semver.io', () => {
-        return dockerize.dockerfile(__dirname + '/sample_app_nvmrc')
+        return dockerize.dockerfile(`${__dirname}/sample_app_nvmrc`)
           .then(() => {
             expect(nvmrcNockScope.isDone()).to.equal(true, 'Version not requested from semver.io!');
           });
       });
 
       it('sets dockerfile FROM', () => {
-        return dockerize.dockerfile(__dirname + '/sample_app_nvmrc')
+        return dockerize.dockerfile(`${__dirname}/sample_app_nvmrc`)
           .then(dockerfile => {
             const lines = dockerfile.split(os.EOL);
             expect(lines[0]).to.equal('FROM node:4.2.1');
@@ -62,14 +61,14 @@ describe('Dockerize', () => {
 
     describe('node version from package.json', () => {
       it('requests node version from semver.io', () => {
-        return dockerize.dockerfile(__dirname + '/sample_app_node_engine')
+        return dockerize.dockerfile(`${__dirname}/sample_app_node_engine`)
           .then(() => {
             expect(packageJsonNockScope.isDone()).to.equal(true, 'Version not requested from semver.io!');
           });
       });
 
       it('sets dockerfile FROM', () => {
-        return dockerize.dockerfile(__dirname + '/sample_app_node_engine')
+        return dockerize.dockerfile(`${__dirname}/sample_app_node_engine`)
           .then(dockerfile => {
             const lines = dockerfile.split(os.EOL);
             expect(lines[0]).to.equal('FROM node:5.0.0');
@@ -79,14 +78,14 @@ describe('Dockerize', () => {
 
     describe('unknown node version', () => {
       it('requests stable version from semver.io', () => {
-        return dockerize.dockerfile(__dirname + '/sample_app_no_node_version')
+        return dockerize.dockerfile(`${__dirname}/sample_app_no_node_version`)
           .then(() => {
             expect(unknownNodeNockScope.isDone()).to.equal(true, 'Version not requested from semver.io!');
           });
-      });;
+      });
 
       it('sets dockerfile FROM', () => {
-        return dockerize.dockerfile(__dirname + '/sample_app_no_node_version')
+        return dockerize.dockerfile(`${__dirname}/sample_app_no_node_version`)
           .then(dockerfile => {
             const lines = dockerfile.split(os.EOL);
             expect(lines[0]).to.equal('FROM node:5.1.0');
@@ -105,12 +104,10 @@ describe('Dockerize', () => {
       });
 
       it('throws with error information', done => {
-        return dockerize.dockerfile(__dirname + '/sample_app_nvmrc')
-          .then(() => {
-            done(new Error('Expected an error in test'));
-          })
+        return dockerize.dockerfile(`${__dirname}/sample_app_nvmrc`)
+          .then(() => done(new Error('Expected an error in test')))
           .catch(err => {
-            expect(err).to.exist;
+            expect(err).to.exist();
             expect(err).to.be.a('error');
             expect(err.message).to.equal('Unable to get node version for base image from https://semver.io. 500 - an error from semver.io');
             done();
@@ -120,7 +117,7 @@ describe('Dockerize', () => {
 
     describe('CMD', () => {
       it('is npm start when defined in package.json', () => {
-        return dockerize.dockerfile(__dirname + '/sample_app_npm_start')
+        return dockerize.dockerfile(`${__dirname}/sample_app_npm_start`)
           .then(dockerfile => {
             const lines = dockerfile.split(os.EOL);
             expect(lines[lines.length - 1]).to.equal('CMD ["npm", "start"]');
@@ -128,7 +125,7 @@ describe('Dockerize', () => {
       });
 
       it('is node [entrypoint] when defined in package.json', () => {
-        return dockerize.dockerfile(__dirname + '/sample_app_node_entrypoint')
+        return dockerize.dockerfile(`${__dirname}/sample_app_node_entrypoint`)
           .then(dockerfile => {
             const lines = dockerfile.split(os.EOL);
             expect(lines[lines.length - 1]).to.equal('CMD ["node", "entrypoint.js"]');
@@ -136,12 +133,10 @@ describe('Dockerize', () => {
       });
 
       it('throws when unknown', done => {
-        return dockerize.dockerfile(__dirname + '/sample_app_unknown_cmd')
-          .then(dockerfile => {
-            done(new Error('Expected an error in test'));
-          })
+        return dockerize.dockerfile(`${__dirname}/sample_app_unknown_cmd`)
+          .then(() => done(new Error('Expected an error in test')))
           .catch(err => {
-            expect(err).to.exist;
+            expect(err).to.exist();
             expect(err).to.be.a('error');
             expect(err.message).to.equal('Cannot determine CMD for Dockerfile. Set "start" script or "main" attribute in package.json!');
             done();
@@ -151,26 +146,26 @@ describe('Dockerize', () => {
 
     describe('source code', () => {
       it('copies source code to /usr/local/[app-name]', () => {
-        return dockerize.dockerfile(__dirname + '/sample_app_source_code')
+        return dockerize.dockerfile(`${__dirname}/sample_app_source_code`)
           .then(dockerfile => {
             const lines = dockerfile.split(os.EOL);
-            expect(lines[1]).to.equal('COPY . /usr/local/package-json-name')
+            expect(lines[1]).to.equal('COPY . /usr/local/package-json-name');
           });
       });
 
       it('sets WORKDIR to /usr/local/[app-name]', () => {
-        return dockerize.dockerfile(__dirname + '/sample_app_source_code')
+        return dockerize.dockerfile(`${__dirname}/sample_app_source_code`)
           .then(dockerfile => {
             const lines = dockerfile.split(os.EOL);
-            expect(lines[2]).to.equal('WORKDIR /usr/local/package-json-name')
+            expect(lines[2]).to.equal('WORKDIR /usr/local/package-json-name');
           });
       });
 
-      it ('runs npm install', () => {
-        return dockerize.dockerfile(__dirname + '/sample_app_source_code')
+      it('runs npm install', () => {
+        return dockerize.dockerfile(`${__dirname}/sample_app_source_code`)
           .then(dockerfile => {
             const lines = dockerfile.split(os.EOL);
-            expect(lines[3]).to.equal('RUN npm install')
+            expect(lines[3]).to.equal('RUN npm install');
           });
       });
     });

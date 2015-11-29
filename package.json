@@ -16,7 +16,12 @@
       "node",
       "mocha"
     ],
-    "space": true
+    "space": true,
+    "rules": {
+      "arrow-body-style": [
+        0
+      ]
+    }
   },
   "repository": {
     "type": "git",
@@ -42,6 +47,7 @@
   "devDependencies": {
     "chai": "^3.4.1",
     "chokidar-cli": "^1.2.0",
+    "dirty-chai": "^1.2.2",
     "mocha": "^2.3.4",
     "nock": "^3.3.2",
     "retire": "^1.1.1",
