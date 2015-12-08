@@ -11,8 +11,8 @@ const commandBuilder = require('./lib/command_builder');
 const directory = process.cwd();
 const dockerfileLocation = `${directory}/Dockerfile`;
 
-const executeCommand = (command, directory) => {
-  return new Promise((resolve, reject) => {
+const executeCommand = (command, directory) =>
+  new Promise((resolve, reject) => {
     const proc = exec(command, {cwd: directory});
 
     proc.stdout.pipe(process.stdout);
@@ -30,22 +30,19 @@ const executeCommand = (command, directory) => {
       reject(error);
     });
   });
-};
 
 dockerize.dockerfile(directory)
-  .then(dockerfile => {
-    return new Promise((resolve, reject) => {
-      fs.writeFile(dockerfileLocation, dockerfile, err => {
-        if (err) {
-          console.error(`Unable to write dockerfile to ${dockerfileLocation}.`);
-          reject(err);
-        }
+  .then(dockerfile => new Promise((resolve, reject) => {
+    fs.writeFile(dockerfileLocation, dockerfile, err => {
+      if (err) {
+        console.error(`Unable to write dockerfile to ${dockerfileLocation}.`);
+        reject(err);
+      }
 
-        console.log('Created Dockerfile');
-        resolve();
-      });
+      console.log('Created Dockerfile');
+      resolve();
     });
-  })
+  }))
   .then(() => {
     const command = commandBuilder.dockerBuild(directory);
 

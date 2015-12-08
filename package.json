@@ -16,12 +16,7 @@
       "node",
       "mocha"
     ],
-    "space": true,
-    "rules": {
-      "arrow-body-style": [
-        0
-      ]
-    }
+    "space": true
   },
   "repository": {
     "type": "git",
