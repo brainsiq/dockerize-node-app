@@ -94,7 +94,8 @@ describe('Dockerize', () => {
           .catch(err => {
             expect(err).to.exist();
             expect(err).to.be.a('error');
-            expect(err.message).to.equal('Unable to get node version for base image from https://semver.io. 500 - an error from semver.io');
+            console.log(err);
+            expect(err.message).to.equal('Unable to get node version for base image from https://semver.io. HTTP 500 response - an error from semver.io');
             done();
           }));
     });

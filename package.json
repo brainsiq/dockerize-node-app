@@ -49,7 +49,6 @@
     "xo": "^0.11.2"
   },
   "dependencies": {
-    "lodash-deep": "^1.6.0",
-    "request-promise": "^1.0.2"
+    "lodash-deep": "^1.6.0"
   }
 }
