@@ -46,7 +46,7 @@
     "mocha": "^2.3.4",
     "nock": "^3.4.0",
     "retire": "^1.1.1",
-    "xo": "^0.11.2"
+    "xo": "^0.12.0"
   },
   "dependencies": {
     "lodash-deep": "^1.6.0"
