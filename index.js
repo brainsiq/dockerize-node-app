@@ -11,7 +11,7 @@ const commandBuilder = require('./lib/command_builder');
 const directory = process.cwd();
 const dockerfileLocation = `${directory}/Dockerfile`;
 
-const executeCommand = (command, directory) =>
+const executeCommand = (command, directory, errorMessage) =>
   new Promise((resolve, reject) => {
     const proc = exec(command, {cwd: directory});
 
@@ -24,7 +24,7 @@ const executeCommand = (command, directory) =>
         return resolve();
       }
 
-      const error = new Error('command failed');
+      const error = new Error(errorMessage);
       error.exitCode = code;
 
       reject(error);
@@ -48,7 +48,7 @@ dockerize.dockerfile(directory)
 
     console.log(`Building docker image with command: ${command}`);
 
-    return executeCommand(command, directory);
+    return executeCommand(command, directory, 'docker build command failed');
   })
   .then(() => {
     console.log('Built docker image');
@@ -57,11 +57,13 @@ dockerize.dockerfile(directory)
 
     console.log(`Running docker image with command: ${command}`);
 
-    return executeCommand(command, directory);
-  }, err => {
-    throw new Error(`docker build command failed with exit code ${err.code}`);
+    return executeCommand(command, directory, 'docker run command failed');
   })
-  .then(() => console.log('Exited container'), err => {
-    throw new Error(`docker run command failed with exit code ${err.code}`);
-  })
-  .catch(console.error);
+  .then(() => console.log('Exited container'))
+  .catch(err => {
+    console.error(err);
+
+    if (err.exitCode) {
+      console.log(`Exit code: ${err.exitCode}`);
+    }
+  });
