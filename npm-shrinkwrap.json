@@ -1,6 +1,6 @@
 {
   "name": "dockerize-app",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "dependencies": {
     "lodash-deep": {
       "version": "1.6.0",
