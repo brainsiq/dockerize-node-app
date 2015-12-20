@@ -16,7 +16,10 @@
       "node",
       "mocha"
     ],
-    "space": true
+    "space": true,
+    "rules": {
+      "max-nested-callbacks": 0
+    }
   },
   "repository": {
     "type": "git",
@@ -46,6 +49,7 @@
     "mocha": "^2.3.4",
     "nock": "^5.2.1",
     "retire": "^1.1.1",
+    "sinon": "^1.17.2",
     "xo": "^0.12.0"
   },
   "dependencies": {
