@@ -3,6 +3,10 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/).
 
+## [2.0.2] - 2015-12-20
+- Dependency updates
+- Fix error output
+
 ## [2.0.1] - 2015-11-29
 - Change to development scripts and linting fixes
 - No functional change
