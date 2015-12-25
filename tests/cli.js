@@ -48,7 +48,7 @@ describe.only('CLI', () => {
       });
     });
 
-    describe('when dockerfile is not generated', () => {
+    describe('when dockerfile generation fails', () => {
       beforeEach(() => {
         sandbox.stub(dockerize, 'dockerfile', () => Promise.reject(new Error('a dockerfile error')));
 
@@ -62,6 +62,25 @@ describe.only('CLI', () => {
         expect(consoleErrorSpy.firstCall.args).to.deep.equal(['Unable to create /dir/Dockerfile']);
         expect(consoleErrorSpy.secondCall.args[0]).to.be.an('error');
         expect(consoleErrorSpy.secondCall.args[0]).to.have.property('message', 'a dockerfile error');
+      });
+    });
+
+    describe('when dockerfile write fails', () => {
+      beforeEach(() => {
+        sandbox.stub(dockerize, 'dockerfile', () => Promise.resolve(stubDockerfile));
+
+        sandbox.stub(fs, 'writeFile', (dir, file, callback) => callback(new Error('a file write error')));
+
+        return cli.run('/dir')
+          .catch(() => {
+            // prevent error breaking tests
+          });
+      });
+
+      it('prints a file write error', () => {
+        expect(consoleErrorSpy.firstCall.args).to.deep.equal(['Unable to create /dir/Dockerfile']);
+        expect(consoleErrorSpy.secondCall.args[0]).to.be.an('error');
+        expect(consoleErrorSpy.secondCall.args[0]).to.have.property('message', 'a file write error');
       });
     });
   });
