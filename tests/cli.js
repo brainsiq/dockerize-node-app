@@ -1,5 +1,6 @@
 'use strict';
 
+const childProcess = require('child_process');
 const fs = require('fs');
 const expect = require('chai').expect;
 const sinon = require('sinon');
@@ -49,8 +50,11 @@ describe.only('CLI', () => {
     });
 
     describe('when dockerfile generation fails', () => {
+      let execStub;
+
       beforeEach(() => {
         sandbox.stub(dockerize, 'dockerfile', () => Promise.reject(new Error('a dockerfile error')));
+        execStub = sandbox.stub(childProcess, 'exec', () => ({}));
 
         return cli.run('/dir')
           .catch(() => {
@@ -63,13 +67,21 @@ describe.only('CLI', () => {
         expect(consoleErrorSpy.secondCall.args[0]).to.be.an('error');
         expect(consoleErrorSpy.secondCall.args[0]).to.have.property('message', 'a dockerfile error');
       });
+
+      it('does not call build command', () => {
+        sinon.assert.notCalled(execStub);
+      });
     });
 
     describe('when dockerfile write fails', () => {
+      let execStub;
+
       beforeEach(() => {
         sandbox.stub(dockerize, 'dockerfile', () => Promise.resolve(stubDockerfile));
 
         sandbox.stub(fs, 'writeFile', (dir, file, callback) => callback(new Error('a file write error')));
+
+        execStub = sandbox.stub(childProcess, 'exec', () => ({}));
 
         return cli.run('/dir')
           .catch(() => {
@@ -81,6 +93,10 @@ describe.only('CLI', () => {
         expect(consoleErrorSpy.firstCall.args).to.deep.equal(['Unable to create /dir/Dockerfile']);
         expect(consoleErrorSpy.secondCall.args[0]).to.be.an('error');
         expect(consoleErrorSpy.secondCall.args[0]).to.have.property('message', 'a file write error');
+      });
+
+      it('does not call build command', () => {
+        sinon.assert.notCalled(execStub);
       });
     });
   });
