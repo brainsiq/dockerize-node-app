@@ -1,20 +1,24 @@
 'use strict';
 
 const childProcess = require('child_process');
+const events = require('events');
 const fs = require('fs');
 const expect = require('chai').expect;
 const sinon = require('sinon');
 
 const cli = require('../lib/cli');
 const dockerize = require('../lib/dockerize');
+const commandBuilder = require('../lib/command_builder');
 
 const stubDockerfile = 'FROM node\nCMD ["npm", "start"]';
+const stubDockerBuildCommand = 'docker build .';
 
 describe.only('CLI', () => {
   describe('run', () => {
     let sandbox;
     let consoleLogSpy;
     let consoleErrorSpy;
+    let execStub;
 
     beforeEach(() => {
       sandbox = sinon.sandbox.create();
@@ -32,6 +36,18 @@ describe.only('CLI', () => {
 
         writeFileStub = sandbox.stub(fs, 'writeFile', (dir, file, callback) => callback());
 
+        sandbox.stub(commandBuilder, 'dockerBuild', () => stubDockerBuildCommand);
+
+        execStub = sandbox.stub(childProcess, 'exec', () => {
+          const proc = new events.EventEmitter();
+
+          setTimeout(() => {
+            proc.emit('exit', {});
+          }, 50);
+
+          return proc;
+        });
+
         return cli.run('/dir');
       });
 
@@ -47,11 +63,17 @@ describe.only('CLI', () => {
         expect(consoleLogSpy.firstCall.args).to.deep.equal(['Created /dir/Dockerfile']);
         expect(consoleLogSpy.secondCall.args).to.deep.equal([stubDockerfile]);
       });
+
+      it('prints the docker biuld command', () => {
+        expect(consoleLogSpy.thirdCall.args).to.deep.equal([`Building docker image with command: ${stubDockerBuildCommand}`]);
+      });
+
+      it('executes the docker build command', () => {
+        expect(execStub.firstCall.args).to.deep.equal([stubDockerBuildCommand, {cwd: '/dir'}]);
+      });
     });
 
     describe('when dockerfile generation fails', () => {
-      let execStub;
-
       beforeEach(() => {
         sandbox.stub(dockerize, 'dockerfile', () => Promise.reject(new Error('a dockerfile error')));
         execStub = sandbox.stub(childProcess, 'exec', () => ({}));
@@ -74,13 +96,9 @@ describe.only('CLI', () => {
     });
 
     describe('when dockerfile write fails', () => {
-      let execStub;
-
       beforeEach(() => {
         sandbox.stub(dockerize, 'dockerfile', () => Promise.resolve(stubDockerfile));
-
         sandbox.stub(fs, 'writeFile', (dir, file, callback) => callback(new Error('a file write error')));
-
         execStub = sandbox.stub(childProcess, 'exec', () => ({}));
 
         return cli.run('/dir')
