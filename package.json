@@ -49,6 +49,6 @@
     "xo": "^0.12.0"
   },
   "dependencies": {
-    "lodash-deep": "^1.6.0"
+    "lodash-deep": "^2.0.0"
   }
 }
