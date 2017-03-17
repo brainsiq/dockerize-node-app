@@ -4,11 +4,13 @@
 
 CLI tool to generate a Dockerfile for running a NodeJS application, and starting a Docker container from it.
 
+*This project was a bit of fun to learn a bit more about combining Docker and Node.js. The features documented below should work but no more features will be added.*
+
 # Installation
 
 `npm install -g dockerize-app`
 
-# Useage
+# Usage
 
 ```
 # creates dockerfile, builds image and runs container
@@ -24,5 +26,3 @@ dockerize
 * Adds source code into docker image
 * Runs `npm install`
 * Sets start command as npm start or node [entrypoint.js] depending on package.json settings
-
-See [issues](https://github.com/brainsiq/dockerize-node-app/issues?q=is%3Aopen+is%3Aissue+label%3Aenhancement) for upcoming features.
